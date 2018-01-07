@@ -16,10 +16,13 @@ matrix:
             - g++-7
       env:
         - MATRIX_EVAL="CC=gcc-7 && CXX=g++-7"
+before_install:
+  - eval "${MATRIX_EVAL}"
+install:
+  - sudo apt-get install -qq doxygen
 before_script:
   - echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update -qq
-  - sudo apt-get install -qq doxygen
 script:
   - cmake .
   - cmake --build .
@@ -32,8 +35,6 @@ after_success:
       source .ci/setup-ssh.sh || travis_terminate 1
       .ci/generateDocumentation.sh || travis_terminate 1
     fi
-before_install:
-  - eval "${MATRIX_EVAL}"
 deploy:
   provider: script
   skip_cleanup: true
