@@ -32,7 +32,7 @@ __AUTHOR__="Francesco Romano"
 # repository.
 # 
 ################################################################################
-
+#!/bin/bash
 ################################################################################
 ##### Setup this script and get the current gh-pages branch.               #####
 echo 'Setting up the script...'
