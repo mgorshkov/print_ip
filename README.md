@@ -3,4 +3,4 @@ Otus IP printing task
 
 Prints out content of an ip address
 
-Doxygen documentation: https://mgorshkov.github.io/print_ip/html/index.html
+Doxygen documentation: https://mgorshkov.github.io/print_ip
