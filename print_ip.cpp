@@ -1,16 +1,17 @@
 /**
  * @file print_ip.cpp
  *
- * Methods for printing ip addresses of different representations.
+ * Methods for printing ip addresses represented in different ways.
  */
 #include <iostream>
 #include <type_traits>
 #include <list>
 #include <vector>
 #include <tuple>
+#include <string>
 
 /**
- * @brief Prints out content of an ip address represented as an integral type.
+ * @brief Prints out contents of an ip address represented as an integral type.
  */
 template <typename T>
 static std::enable_if_t<std::is_integral_v<T>, void> PrintIp(T value)
@@ -29,11 +30,6 @@ static std::enable_if_t<std::is_integral_v<T>, void> PrintIp(T value)
     }
 }
 
-std::ostream& operator << (std::ostream& stream, const std::string& str)
-{
-    return stream << str.c_str();
-}
-
 /**
  * @brief Prints out contents of an ip address represented as a vector or a list.
  */
@@ -50,7 +46,8 @@ static std::enable_if_t<!std::is_integral_v<T>, void> PrintIp(const T& container
 }
 
 /**
- * \defgroup Helper structs for printing tuples of same types.
+ * \defgroup helpers
+ * Helper structs for printing tuples of same types.
  */
 /**@{*/
 template <size_t I>
@@ -89,7 +86,7 @@ static void PrintIp(const std::tuple<Types...>& tuple)
 }
 
 /**
- * @brief Main function with ip printine demo.
+ * @brief Main function with ip printing demo.
  */
 int main(int, char const **)
 {
