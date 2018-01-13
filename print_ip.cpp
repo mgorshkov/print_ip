@@ -47,7 +47,7 @@ static std::enable_if_t<!std::is_integral_v<T>, void> PrintIp(const T& container
 
 /**
  * \defgroup helpers
- * Helper structs for printing tuples of same types.
+ * Helper structs for printing ip addresses as tuples of same types.
  */
 /**@{*/
 template <size_t I>
