@@ -10,37 +10,55 @@
 #include <tuple>
 #include <string>
 
+static const char OctetSeparator = '.';
+
 /**
  * @brief Prints out contents of an ip address represented as an integral type.
  */
 template <typename T>
 static std::enable_if_t<std::is_integral_v<T>, void> PrintIp(T value)
 {
-    while (true)
+    static const size_t constexpr SizeInOctets = sizeof(T);
+    for (size_t i = SizeInOctets; i--;)
     {
-        std::cout << (value & 0xFF);
-        value >>= 8;
-        if (value == 0)
-        {
-            std::cout << std::endl;
-            break;
-        }
-        else
-            std::cout << ".";
+        std::cout << (value >> (i << 3) & 0xFF);
+        if (i > 0)
+            std::cout << OctetSeparator;
     }
+    std::cout << std::endl;
 }
+
+/**
+ *  @brief Prints out contents of an ip address represented as a string.
+ */
+static void PrintIp(const std::string& value)
+{
+    std::cout << value << std::endl;
+}
+
+/**
+ * @brief Helper struct. Determines whether T is std::vector or std::list.
+ */
+template <typename>
+struct is_std_vector_or_list : std::false_type {};
+
+template <typename T, typename... Args>
+struct is_std_vector_or_list<std::vector<T, Args...>> : std::true_type {};
+
+template <typename T, typename... Args>
+struct is_std_vector_or_list<std::list<T, Args...>> : std::true_type {};
 
 /**
  * @brief Prints out contents of an ip address represented as a vector or a list.
  */
 template <typename T>
-static std::enable_if_t<!std::is_integral_v<T>, void> PrintIp(const T& container)
+static void PrintIp(std::enable_if_t<is_std_vector_or_list<T>::value, const T&> container)
 {
     for (auto it = container.begin(); it != container.end(); ++it)
     {
         std::cout << *it;
         if (it != std::prev(container.end()))
-            std::cout << ".";
+            std::cout << OctetSeparator;
     }
     std::cout << std::endl;
 }
@@ -61,7 +79,7 @@ struct PrintTuple
 
         std::cout << element;
         if (I > 1)
-            std::cout << ".";
+            std::cout << OctetSeparator;
 
         PrintTuple<I - 1>::Print(tuple);
     }
@@ -92,18 +110,33 @@ int main(int, char const **)
 {
     try
     {
-        PrintIp(0);
-        PrintIp(1);
-        PrintIp(255);
-        PrintIp(256);
-        PrintIp(1234567890);
-        PrintIp(1234567890123456);
+        char addrChar{-1};
+        PrintIp(addrChar);
 
-        PrintIp(std::list<int>{0, 1, 2, 3});
+        short addrShort{0};
+        PrintIp(addrShort);
 
-        PrintIp(std::vector<std::string>{"abc", "def", "gij", "klm", "nop", "rst"});
+        int addrInt{2130706433};
+        PrintIp(addrInt);
 
-        PrintIp(std::tuple<int, int, int, int>{127, 0, 0, 1});
+        long addrLong{8875824491850138409};
+        PrintIp(addrLong);
+
+        PrintIp("123.45.67.89.12.34.56");
+
+        using IntList = std::list<int>;
+        IntList l{0, 1, 2, 3};
+        PrintIp<IntList>(l);
+
+        using StringVector = std::vector<std::string>;
+        StringVector v{"abc", "def", "gij", "klm", "nop", "rst"};
+        PrintIp<StringVector>(v);
+
+        std::tuple<int, int, int, int> t{127, 0, 0, 1};
+        PrintIp(t);
+
+        std::tuple<std::string, std::string, std::string> tStr{"abc", "def", "gij"};
+        PrintIp(tStr);
     }
     catch (const std::exception &e)
     {
