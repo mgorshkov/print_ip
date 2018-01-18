@@ -20,6 +20,7 @@ before_install:
   - eval "${MATRIX_EVAL}"
 install:
   - sudo apt-get install -qq doxygen
+  - sudo apt-get install -qq dot
 before_script:
   - echo "deb http://archive.ubuntu.com/ubuntu xenial main universe" | sudo tee -a /etc/apt/sources.list
   - sudo apt-get update -qq
